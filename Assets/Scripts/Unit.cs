@@ -13,6 +13,11 @@ public class Unit : MonoBehaviour
         _isBusy = false;
     }
 
+    public void ChangeStatus()
+    {
+        _isBusy = !_isBusy;
+    }
+
     // Update is called once per frame
     void Update()
     {

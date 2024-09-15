@@ -66,6 +66,11 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
         Destroy(spawnObject.gameObject);
     }
 
+    public List<T> GetList()
+    {
+        return _activeObject;
+    }
+
     protected Vector3 GetRandomPosition()
     {
         float randomPositionX = Random.Range(_minPostionX, _maxPostionX);

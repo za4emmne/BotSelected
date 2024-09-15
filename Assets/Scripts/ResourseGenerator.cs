@@ -8,6 +8,7 @@ public class ResourseGenerator : SpawnerObject<Resourse>
     {
         StartGeneration();
     }
+
     public override void StartGeneration()
     {
         if (IsEmptyResourse())

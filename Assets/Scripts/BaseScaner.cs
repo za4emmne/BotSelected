@@ -1,46 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//сделать корутину сканирования, каждый 3-4 секунды
+//сканирование карты в заданном радиусе
+//возвращение листа отсканированных ресурсов
 public class BaseScaner : MonoBehaviour
 {
     [SerializeField] private float _scanRadius;
     [SerializeField] private LayerMask _scannLayerMask;
     [SerializeField] private float _delayOnScan;
 
-    private List<Resourse> _resourses;
-
-    private void Start()
+    private void Update()
     {
-        List<Resourse> resourses = new List<Resourse>();
         DrawScanZone(100, Color.blue);
     }
 
-    public void Scan()
+    public List<Resourse> Scan()
     {
-        
-    }
-
-    private Transform GetResoursePosition(int number)
-    {
-        return _resourses[number].transform;
-    }
-
-    private IEnumerator Scanning()
-    {
-        WaitForSeconds waitOnSpawn = new WaitForSeconds(_delayOnScan);
+        List<Resourse> resourses = new List<Resourse>();
         Collider[] resiurseCollider = Physics.OverlapSphere(transform.position, _scanRadius, _scannLayerMask);
 
-        while (true)
-        {
             foreach (var collider in resiurseCollider)
             {
                 if (collider.TryGetComponent(out Resourse resourse))
-                    _resourses.Add(resourse); 
-            }
-            Debug.Log(_resourses.Count);
-            yield return waitOnSpawn;       
-        }
+                    resourses.Add(resourse);
+            } 
+
+            return resourses;
     }
 
     private void DrawScanZone(int pointsCount, Color color)
