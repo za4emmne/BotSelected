@@ -17,6 +17,9 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
     [SerializeField] private int _maxObjectsInScene;
     [SerializeField] private int _minObjectsInScene;
 
+    public int MinObjectInScene => _minObjectsInScene;
+    public List<T> ActiveObject => _activeObject;
+
     private ObjectPool<T> _objectPool;
     private List<T> _activeObject;
     private Coroutine _spawnCoroutine;
@@ -66,10 +69,10 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
         Destroy(spawnObject.gameObject);
     }
 
-    public List<T> GetList()
-    {
-        return _activeObject;
-    }
+    //public List<T> GetList()
+    //{
+    //    return _activeObject;
+    //}
 
     protected Vector3 GetRandomPosition()
     {
@@ -79,13 +82,13 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
         return new Vector3(randomPositionX, 0, randomPositionZ);
     }
 
-    protected bool IsEmptyResourse()
-    {
-        if (_activeObject.Count < _minObjectsInScene)
-            return true;
-        else
-            return false;
-    }
+    //protected bool IsEmptyResourse()
+    //{
+    //    if (_activeObject.Count < _minObjectsInScene)
+    //        return true;
+    //    else
+    //        return false;
+    //}
 
     private IEnumerator SpawnWithDelay()
     {

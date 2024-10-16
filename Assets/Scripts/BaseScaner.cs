@@ -1,13 +1,24 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//сканирование карты в заданном радиусе
-//возвращение листа отсканированных ресурсов
+//сканирование карты в заданном радиусе + 
+//возвращение листа отсканированных ресурсов +
 public class BaseScaner : MonoBehaviour
 {
     [SerializeField] private float _scanRadius;
     [SerializeField] private LayerMask _scannLayerMask;
     [SerializeField] private float _delayOnScan;
+
+    public List<Resourse> Resourses => _resourses;
+    public event Action OnScanComplete;
+
+    private List<Resourse> _resourses;
+
+    private void Start()
+    {
+        _resourses = new List<Resourse>();
+    }
 
     private void Update()
     {
@@ -16,16 +27,24 @@ public class BaseScaner : MonoBehaviour
 
     public List<Resourse> Scan()
     {
-        List<Resourse> resourses = new List<Resourse>();
         Collider[] resiurseCollider = Physics.OverlapSphere(transform.position, _scanRadius, _scannLayerMask);
 
-            foreach (var collider in resiurseCollider)
+        foreach (var collider in resiurseCollider)
+        {
+            if (collider.TryGetComponent(out Resourse resourse))
             {
-                if (collider.TryGetComponent(out Resourse resourse))
-                    resourses.Add(resourse);
-            } 
+                _resourses.Add(resourse);
+                OnScanComplete?.Invoke();
+            }
+        }
 
-            return resourses;
+        return _resourses;
+    }
+
+    public Transform GetResoursePosition()
+    {
+        Resourse resourse = _resourses[0];
+        return resourse.transform;
     }
 
     private void DrawScanZone(int pointsCount, Color color)

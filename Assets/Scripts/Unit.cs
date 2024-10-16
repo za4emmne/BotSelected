@@ -1,12 +1,12 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class Unit : MonoBehaviour
 {
-    private bool _isBusy;
-
     public bool IsBusy => _isBusy;
+    
+    private bool _isBusy;
 
     private void Start()
     {
@@ -16,11 +16,5 @@ public class Unit : MonoBehaviour
     public void ChangeStatus()
     {
         _isBusy = !_isBusy;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

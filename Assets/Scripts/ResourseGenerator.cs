@@ -14,4 +14,12 @@ public class ResourseGenerator : SpawnerObject<Resourse>
         if (IsEmptyResourse())
             base.StartGeneration();
     }
+
+    private bool IsEmptyResourse()
+    {
+        if (ActiveObject.Count < MinObjectInScene)
+            return true;
+        else
+            return false;
+    }
 }

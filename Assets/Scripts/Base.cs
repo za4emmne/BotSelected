@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,19 +14,24 @@ public class Base : MonoBehaviour
     private BaseScaner _scaner;
     private List<Resourse> _resourses;
 
+    public event Action SendFreeBot;
+
     private void Awake()
     {
-        _scaner = GetComponent<BaseScaner>();
+        _scaner = GetComponent<BaseScaner>(); 
+        _resourses = new List<Resourse>(); 
     }
 
     private void Start()
     {
+
         StartCoroutine(GetResourses());
     }
 
-    public Transform GetPositionResourse(int number)
+    public Transform GetPositionResourse()
     {
-        return _resourses[number].transform;
+        //счетчик сделать в этом классе
+        return _resourses[0].transform;
     }
 
     private IEnumerator GetResourses()
@@ -35,7 +41,7 @@ public class Base : MonoBehaviour
         while (true)
         {
             _resourses = _scaner.Scan();
-            Debug.Log(_resourses.Count);   
+            SendFreeBot?.Invoke();
             yield return waitSpawn;
         }
     }
