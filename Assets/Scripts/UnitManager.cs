@@ -26,14 +26,8 @@ public class UnitManager : MonoBehaviour
         _unitGenerator = GetComponent<UnitGenerator>();
     }
 
-    //private void Start()
-    //{
-    //    StartCoroutine(MoveToResourses());
-    //}
-
     private void OnEnable()
     {
-        //_base.SendFreeBot += MoveToResourses;
         _scaner.OnScanComplete += BotMove;
     }
 
@@ -53,7 +47,6 @@ public class UnitManager : MonoBehaviour
     private IEnumerator MoveToResourses()
     {
         WaitForSeconds wait = new WaitForSeconds(1);
-        //_target = _base.GetPositionResourse(1);
 
         while (true)
         {
@@ -61,21 +54,12 @@ public class UnitManager : MonoBehaviour
 
             if (unit != null)
             {
-                //_target = _scaner.GetResoursePosition();
-                _target = _base.GetPositionResourse();
+                _target = _base.GetNearPositionResourse();
 
                 if (_target != null)
                 {
-                    unit.transform.position = Vector3.MoveTowards(transform.position, _target.position, 0.1f);
+                    unit.TakeResoursePosition(_target);
                 }
-                else
-                {
-                    Debug.Log("res not");
-                }
-            }
-            else
-            {
-                Debug.Log("null");
             }
 
             yield return wait;

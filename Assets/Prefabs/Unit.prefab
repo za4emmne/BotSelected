@@ -100,12 +100,12 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
+  m_Radius: 0.83
+  m_Height: 2.34
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &2612177866786163111
@@ -120,3 +120,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53085cdab23f23a4cb7f391cd9906a2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isBusy: 0

@@ -41,12 +41,6 @@ public class BaseScaner : MonoBehaviour
         return _resourses;
     }
 
-    public Transform GetResoursePosition()
-    {
-        Resourse resourse = _resourses[0];
-        return resourse.transform;
-    }
-
     private void DrawScanZone(int pointsCount, Color color)
     {
         List<Vector3> circlePoints = new List<Vector3>();

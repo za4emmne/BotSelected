@@ -12,26 +12,47 @@ public class Base : MonoBehaviour
     [SerializeField] private float _scanDelay;
 
     private BaseScaner _scaner;
-    private List<Resourse> _resourses;
+    private List<Resourse> _freeResourse;
+    private Transform _lastResoursePosition;
 
     public event Action SendFreeBot;
 
     private void Awake()
     {
-        _scaner = GetComponent<BaseScaner>(); 
-        _resourses = new List<Resourse>(); 
+        _scaner = GetComponent<BaseScaner>();
+        _freeResourse = new List<Resourse>();
     }
 
     private void Start()
     {
-
         StartCoroutine(GetResourses());
     }
 
-    public Transform GetPositionResourse()
+    public Transform GetNearPositionResourse()
     {
-        //счетчик сделать в этом классе
-        return _resourses[0].transform;
+        float currentDistance;
+        float _minDistance = 999;
+        Transform target = null;
+
+        foreach (var resourse in _freeResourse)
+        {
+            currentDistance = (transform.position - resourse.transform.position).sqrMagnitude;
+
+            if (_minDistance > currentDistance)
+            {
+                if (_lastResoursePosition != resourse.transform)
+                {
+                    _minDistance = currentDistance;
+                }
+            }
+        }
+
+        return target;
+    }
+
+    public void RemoveResourseFromList()
+    {
+        _freeResourse.RemoveAt(0);
     }
 
     private IEnumerator GetResourses()
@@ -40,7 +61,7 @@ public class Base : MonoBehaviour
 
         while (true)
         {
-            _resourses = _scaner.Scan();
+            _freeResourse = _scaner.Scan();
             SendFreeBot?.Invoke();
             yield return waitSpawn;
         }

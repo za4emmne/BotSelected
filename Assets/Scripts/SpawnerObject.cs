@@ -74,7 +74,7 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
     //    return _activeObject;
     //}
 
-    protected Vector3 GetRandomPosition()
+    protected virtual Vector3 GetRandomPosition()
     {
         float randomPositionX = Random.Range(_minPostionX, _maxPostionX);
         float randomPositionZ = Random.Range(_minPositionZ, _maxPositionZ);
