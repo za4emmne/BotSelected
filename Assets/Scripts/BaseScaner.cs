@@ -33,12 +33,28 @@ public class BaseScaner : MonoBehaviour
         {
             if (collider.TryGetComponent(out Resourse resourse))
             {
-                _resourses.Add(resourse);
+                SelectedResourse(resourse);
+
+                Debug.Log(_resourses.Count);
                 OnScanComplete?.Invoke();
             }
         }
 
         return _resourses;
+    }
+
+    private void SelectedResourse(Resourse resourse)
+    {
+        if (_resourses != null)
+        {
+            foreach (var addResourse in _resourses)
+            {
+                if (addResourse.transform.position != resourse.transform.position)
+                {
+                    _resourses.Add(resourse);
+                }
+            }
+        }
     }
 
     private void DrawScanZone(int pointsCount, Color color)
