@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 //получение ресурсов +
-//определение координат ресурсов
-//рекью компонент +
-//корутина сканирования карты +
+//определение координат ресурсов +
+//выдача позиции ближайшего ресурса
 [RequireComponent(typeof(BaseScaner))]
 public class Base : MonoBehaviour
 {
@@ -13,56 +13,71 @@ public class Base : MonoBehaviour
 
     private BaseScaner _scaner;
     private List<Resourse> _freeResourse;
-    private Transform _lastResoursePosition;
+    private Coroutine _coroutine;
+    private Resourse _target;
 
     public event Action SendFreeBot;
 
     private void Awake()
     {
         _scaner = GetComponent<BaseScaner>();
-        _freeResourse = new List<Resourse>();
+        _freeResourse = null;
     }
 
     private void Start()
     {
-        StartCoroutine(GetResourses());
+        StartCoroutine(Work());
     }
 
-    public Transform GetNearPositionResourse()
+    //private void OnAddResourse()
+    //{
+
+    //}
+
+    //private void OnEnable()
+    //{
+    //    _scaner.OnScanComplete += OnAddResourse;
+    //}
+
+    //private void OnDisable()
+    //{
+    //    _scaner.OnScanComplete -= OnAddResourse;
+    //}
+
+    public Resourse GetNearResourse()
     {
         float currentDistance;
         float _minDistance = 999;
-        Transform target = null;
 
-        foreach (var resourse in _freeResourse)
+
+        for (int i = 0; i < _freeResourse.Count; i++)
         {
-            currentDistance = (transform.position - resourse.transform.position).sqrMagnitude;
+            currentDistance = (transform.position - _freeResourse[i].transform.position).sqrMagnitude;
 
             if (_minDistance > currentDistance)
             {
-                if (_lastResoursePosition != resourse.transform)
-                {
-                    _minDistance = currentDistance;
-                }
+                _minDistance = currentDistance;
+                _target = _freeResourse[i];
+                _freeResourse.RemoveAt(i);
             }
         }
 
-        return target;
+        return _target;
     }
 
-    public void RemoveResourseFromList()
-    {
-        _freeResourse.RemoveAt(0);
-    }
-
-    private IEnumerator GetResourses()
+    private IEnumerator Work()
     {
         WaitForSeconds waitSpawn = new WaitForSeconds(_scanDelay);
 
         while (true)
         {
             _freeResourse = _scaner.Scan();
-            SendFreeBot?.Invoke();
+
+            if (_freeResourse.Count > 0)
+            {
+                SendFreeBot?.Invoke();
+            }
+
             yield return waitSpawn;
         }
     }

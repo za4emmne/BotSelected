@@ -286,7 +286,7 @@ MonoBehaviour:
   _poolMaxSize: 3
   _minDelaySpawn: 0
   _maxDelaySpawn: 1
-  _maxObjectsInScene: 9
+  _maxObjectsInScene: 3
   _minObjectsInScene: 3
 --- !u!114 &350134080
 MonoBehaviour:
@@ -301,7 +301,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _base: {fileID: 350134078}
-  _scaner: {fileID: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

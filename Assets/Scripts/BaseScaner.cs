@@ -34,8 +34,6 @@ public class BaseScaner : MonoBehaviour
             if (collider.TryGetComponent(out Resourse resourse))
             {
                 SelectedResourse(resourse);
-
-                Debug.Log(_resourses.Count);
                 OnScanComplete?.Invoke();
             }
         }
@@ -45,15 +43,16 @@ public class BaseScaner : MonoBehaviour
 
     private void SelectedResourse(Resourse resourse)
     {
-        if (_resourses != null)
+        if (_resourses.Count > 0)
         {
-            foreach (var addResourse in _resourses)
+            if(_resourses.Contains(resourse) == false)
             {
-                if (addResourse.transform.position != resourse.transform.position)
-                {
-                    _resourses.Add(resourse);
-                }
+                _resourses.Add(resourse);
             }
+        }
+        else
+        {
+            _resourses.Add(resourse);
         }
     }
 

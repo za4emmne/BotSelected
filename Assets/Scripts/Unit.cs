@@ -8,8 +8,9 @@ public class Unit : MonoBehaviour
 
     private float _speed = 3f;
     [SerializeField] private bool _isBusy;
-    private Transform _target;
+    private Resourse _target;
     private Transform _base;
+    private Coroutine _coroutine;
 
     private void Awake()
     {
@@ -18,14 +19,8 @@ public class Unit : MonoBehaviour
 
     private void Start()
     {
-
-        Debug.Log(_base.position);
+        _target = null;
         _isBusy = false;
-    }
-
-    private void Update()
-    {
-        MoveToTarget(_target);
     }
 
     public void ChangeStatus()
@@ -33,27 +28,42 @@ public class Unit : MonoBehaviour
         _isBusy = !_isBusy;
     }
 
-    public void TakeResoursePosition(Transform resourse)
+    public void TakeResourse(Resourse resourse)
     {
         _target = resourse;
-    }
 
-    private void MoveToTarget(Transform target)
-    {
-        if (target != null)
+        if (_coroutine == null)
         {
-            transform.position = Vector3.MoveTowards(transform.position,
-                        target.position, _speed * Time.deltaTime);
+            _coroutine = StartCoroutine(MoveToTarget(_target.transform));
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private IEnumerator MoveToTarget(Transform target)
+    {
+        while (transform.position != target.transform.position)
+        {
+            if (target != null)
+            {
+                transform.position = Vector3.MoveTowards(transform.position,
+                            target.transform.position, _speed * Time.deltaTime);
+            }
+
+            yield return null;
+        }
+
+        TakeResourse(target);
+        _coroutine = null;
+    }
+
+    private void TakeResourse(Component other)
     {
         if (other.TryGetComponent(out Resourse resourse))
         {
-            _target = _base;
-            Debug.Log(_base.position);
-            Debug.Log(_target.position);
+            if (resourse == _target)
+            {
+                _target.transform.parent = gameObject.transform;
+                StartCoroutine(MoveToTarget(_base));
+            }
         }
     }
 }

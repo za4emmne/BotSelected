@@ -12,28 +12,26 @@ using static UnityEngine.GraphicsBuffer;
 public class UnitManager : MonoBehaviour
 {
     [SerializeField] private Base _base;
-    [SerializeField] private BaseScaner _scaner;
 
     private UnitGenerator _unitGenerator;
-    private Transform _target;
+    private Resourse _target;
     private Coroutine _coroutine;
     private List<Unit> _activeUnits;
 
     private void Awake()
     {
         _activeUnits = new List<Unit>();
-        _scaner = GetComponent<BaseScaner>();
         _unitGenerator = GetComponent<UnitGenerator>();
     }
 
     private void OnEnable()
     {
-        _scaner.OnScanComplete += BotMove;
+        _base.SendFreeBot += BotMove;
     }
 
     private void OnDisable()
     {
-        _scaner.OnScanComplete -= BotMove;
+        _base.SendFreeBot -= BotMove;
     }
 
     private void BotMove()
@@ -46,23 +44,21 @@ public class UnitManager : MonoBehaviour
 
     private IEnumerator MoveToResourses()
     {
-        WaitForSeconds wait = new WaitForSeconds(1);
-
         while (true)
         {
-            Unit unit = GetFree();
-
-            if (unit != null)
+            _target = _base.GetNearResourse();
+           
+            if (_target != null)
             {
-                _target = _base.GetNearPositionResourse();
+                Unit unit = GetFree();
 
-                if (_target != null)
+                if (unit != null)
                 {
-                    unit.TakeResoursePosition(_target);
+                    unit.TakeResourse(_target);
                 }
             }
 
-            yield return wait;
+            yield return null;
         }
 
     }
