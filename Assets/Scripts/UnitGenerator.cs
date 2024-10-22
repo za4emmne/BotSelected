@@ -2,13 +2,15 @@ using UnityEngine;
 
 public class UnitGenerator : SpawnerObject<Unit>
 {
+    private Vector3 _basePosition;
     private void Start()
     {
+        _basePosition = transform.localPosition;
         base.StartGeneration();
     }
 
     protected override Vector3 GetRandomPosition()
     {
-        return new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        return _basePosition;
     }
 }

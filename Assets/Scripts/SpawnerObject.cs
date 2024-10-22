@@ -79,7 +79,7 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
         float randomPositionX = Random.Range(_minPostionX, _maxPostionX);
         float randomPositionZ = Random.Range(_minPositionZ, _maxPositionZ);
 
-        return new Vector3(randomPositionX, 0, randomPositionZ);
+        return new Vector3(randomPositionX, 0.55f, randomPositionZ);
     }
 
     //protected bool IsEmptyResourse()

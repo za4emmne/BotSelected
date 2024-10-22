@@ -31,6 +31,8 @@ public class Unit : MonoBehaviour
     public void TakeResourse(Resourse resourse)
     {
         _target = resourse;
+        transform.LookAt(_target.transform);
+        transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
 
         if (_coroutine == null)
         {
@@ -51,19 +53,35 @@ public class Unit : MonoBehaviour
             yield return null;
         }
 
-        TakeResourse(target);
+        //TakeResourse(target);
         _coroutine = null;
     }
 
     private void TakeResourse(Component other)
     {
         if (other.TryGetComponent(out Resourse resourse))
-        {
+        {  
+            Debug.Log("во что то вошел");
             if (resourse == _target)
             {
                 _target.transform.parent = gameObject.transform;
-                StartCoroutine(MoveToTarget(_base));
+                //ReturnToBase();
             }
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+
+        TakeResourse(other);
+    }
+
+    private void ReturnToBase()
+    {
+        if (_coroutine == null)
+        {
+            Debug.Log("return");
+            _coroutine = StartCoroutine(MoveToTarget(_base));
         }
     }
 }
