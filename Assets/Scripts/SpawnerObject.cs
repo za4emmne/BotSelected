@@ -54,6 +54,7 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
 
     public virtual void OnGet(T spawnObject)
     {
+        spawnObject.transform.parent = transform;
         spawnObject.gameObject.SetActive(true);
         _activeObject.Add(spawnObject);
     }

@@ -9,16 +9,14 @@ public class Unit : MonoBehaviour
     private float _speed = 3f;
     [SerializeField] private bool _isBusy;
     private Resourse _target;
-    private Transform _base;
+    [SerializeField] private Transform _garage;
     private Coroutine _coroutine;
-
-    private void Awake()
-    {
-        _base = transform;
-    }
+    private Base _base;
 
     private void Start()
     {
+        _garage = transform.parent;
+        _base = GetComponentInParent<Base>();
         _target = null;
         _isBusy = false;
     }
@@ -31,12 +29,12 @@ public class Unit : MonoBehaviour
     public void TakeResourse(Resourse resourse)
     {
         _target = resourse;
-        transform.LookAt(_target.transform);
-        transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
+
 
         if (_coroutine == null)
         {
             _coroutine = StartCoroutine(MoveToTarget(_target.transform));
+
         }
     }
 
@@ -44,6 +42,8 @@ public class Unit : MonoBehaviour
     {
         while (transform.position != target.transform.position)
         {
+            transform.LookAt(_target.transform);
+            transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
             if (target != null)
             {
                 transform.position = Vector3.MoveTowards(transform.position,
@@ -54,34 +54,36 @@ public class Unit : MonoBehaviour
         }
 
         //TakeResourse(target);
-        _coroutine = null;
     }
 
-    private void TakeResourse(Component other)
+    //private void PutResourse(Component other)
+    //{
+    //    if (other.TryGetComponent(out Resourse resourse))
+    //    {
+    //        if (resourse == _target)
+    //        {
+    //            _target.transform.parent = gameObject.transform;
+    //            StopCoroutine(_coroutine);
+    //            ReturnToBase();
+    //        }
+    //    }
+    //}
+
+    private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out Resourse resourse))
-        {  
-            Debug.Log("во что то вошел");
+        if (other.TryGetComponent<Resourse>(out Resourse resourse))
+        {
             if (resourse == _target)
             {
                 _target.transform.parent = gameObject.transform;
-                //ReturnToBase();
+                StopCoroutine(_coroutine);
+                ReturnToBase();
             }
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void ReturnToBase()
     {
-
-        TakeResourse(other);
-    }
-
-    private void ReturnToBase()
-    {
-        if (_coroutine == null)
-        {
-            Debug.Log("return");
-            _coroutine = StartCoroutine(MoveToTarget(_base));
-        }
+        _coroutine = StartCoroutine(MoveToTarget(_garage));
     }
 }
