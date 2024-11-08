@@ -1,23 +1,22 @@
+using System;
 using System.Collections;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class Unit : MonoBehaviour
 {
     public bool IsBusy => _isBusy;
 
-    private float _speed = 3f;
+    [SerializeField] private float _speed = 3f;
     [SerializeField] private bool _isBusy;
+    [SerializeField] private bool _isPutUpResourse;
+
     private Resourse _target;
-    [SerializeField] private Transform _garage;
     private Coroutine _coroutine;
-    private Base _base;
 
     private void Start()
     {
-        _garage = transform.parent;
-        _base = GetComponentInParent<Base>();
         _target = null;
+        _isPutUpResourse = false;
         _isBusy = false;
     }
 
@@ -30,11 +29,9 @@ public class Unit : MonoBehaviour
     {
         _target = resourse;
 
-
         if (_coroutine == null)
         {
             _coroutine = StartCoroutine(MoveToTarget(_target.transform));
-
         }
     }
 
@@ -44,6 +41,7 @@ public class Unit : MonoBehaviour
         {
             transform.LookAt(_target.transform);
             transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
+
             if (target != null)
             {
                 transform.position = Vector3.MoveTowards(transform.position,
@@ -53,7 +51,7 @@ public class Unit : MonoBehaviour
             yield return null;
         }
 
-        //TakeResourse(target);
+        PutOnResourse();
     }
 
     //private void PutResourse(Component other)
@@ -77,13 +75,26 @@ public class Unit : MonoBehaviour
             {
                 _target.transform.parent = gameObject.transform;
                 StopCoroutine(_coroutine);
+                _isPutUpResourse = true;
                 ReturnToBase();
             }
         }
     }
 
-    public void ReturnToBase()
+    private void ReturnToBase()
     {
-        _coroutine = StartCoroutine(MoveToTarget(_garage));
+        _coroutine = StartCoroutine(MoveToTarget(Base.singleton.transform));
+    }
+
+    private void PutOnResourse()
+    {
+        if (_isPutUpResourse)
+        {
+            _target.transform.parent = Base.singleton.transform;
+            Base.singleton.OnAddResourse();
+            _coroutine = null;
+            _isBusy = false;
+            _isPutUpResourse = false;
+        }
     }
 }

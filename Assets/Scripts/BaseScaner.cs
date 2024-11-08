@@ -9,6 +9,7 @@ public class BaseScaner : MonoBehaviour
     [SerializeField] private float _scanRadius;
     [SerializeField] private LayerMask _scannLayerMask;
     [SerializeField] private float _delayOnScan;
+    [SerializeField] private Base _base;
 
     public List<Resourse> Resourses => _resourses;
     public event Action OnScanComplete;
@@ -34,18 +35,25 @@ public class BaseScaner : MonoBehaviour
             if (collider.TryGetComponent(out Resourse resourse))
             {
                 SelectedResourse(resourse);
-                OnScanComplete?.Invoke();
             }
         }
 
         return _resourses;
     }
 
+    public void RemoveResourse(Resourse resourse)
+    {
+        if(resourse != null)
+        {
+            _resourses.Remove(resourse);
+        }
+    }
+
     private void SelectedResourse(Resourse resourse)
     {
         if (_resourses.Count > 0)
         {
-            if(_resourses.Contains(resourse) == false)
+            if (_resourses.Contains(resourse) == false)
             {
                 _resourses.Add(resourse);
             }

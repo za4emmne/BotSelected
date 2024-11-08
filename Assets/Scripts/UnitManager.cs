@@ -11,8 +11,6 @@ using static UnityEngine.GraphicsBuffer;
 
 public class UnitManager : MonoBehaviour
 {
-    [SerializeField] private Base _base;
-
     private UnitGenerator _unitGenerator;
     private Resourse _target;
     private Coroutine _coroutine;
@@ -26,12 +24,12 @@ public class UnitManager : MonoBehaviour
 
     private void OnEnable()
     {
-        _base.SendFreeBot += BotMove;
+        Base.singleton.SendFreeBot += BotMove;
     }
 
     private void OnDisable()
     {
-        _base.SendFreeBot -= BotMove;
+        Base.singleton.SendFreeBot -= BotMove;
     }
 
     private void BotMove()
@@ -46,8 +44,8 @@ public class UnitManager : MonoBehaviour
     {
         while (true)
         {
-            _target = _base.GetNearResourse();
-           
+            _target = Base.singleton.GetNearResourse();
+            
             if (_target != null)
             {
                 Unit unit = GetFree();
