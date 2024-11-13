@@ -12,7 +12,6 @@ public class BaseScaner : MonoBehaviour
     [SerializeField] private Base _base;
 
     public List<Resourse> Resourses => _resourses;
-    public event Action OnScanComplete;
 
     private List<Resourse> _resourses;
 
@@ -33,20 +32,10 @@ public class BaseScaner : MonoBehaviour
         foreach (var collider in resiurseCollider)
         {
             if (collider.TryGetComponent(out Resourse resourse))
-            {
                 SelectedResourse(resourse);
-            }
         }
 
         return _resourses;
-    }
-
-    public void RemoveResourse(Resourse resourse)
-    {
-        if(resourse != null)
-        {
-            _resourses.Remove(resourse);
-        }
     }
 
     private void SelectedResourse(Resourse resourse)
@@ -54,19 +43,15 @@ public class BaseScaner : MonoBehaviour
         if (_resourses.Count > 0)
         {
             if (_resourses.Contains(resourse) == false)
-            {
                 _resourses.Add(resourse);
-            }
         }
         else
-        {
             _resourses.Add(resourse);
-        }
     }
 
     private void DrawScanZone(int pointsCount, Color color)
     {
-        List<Vector3> circlePoints = new List<Vector3>();
+        List<Vector3> circlePoints = new();
         float degreesInCircle = 360.0f;
         float angleStep = degreesInCircle / pointsCount * Mathf.Deg2Rad;
         Vector3 center = transform.position;

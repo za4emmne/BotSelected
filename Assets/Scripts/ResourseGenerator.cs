@@ -15,11 +15,17 @@ public class ResourseGenerator : SpawnerObject<Resourse>
             base.StartGeneration();
     }
 
-    private bool IsEmptyResourse()
+    private bool IsEmptyResourse() //переделать
     {
         if (ActiveObject.Count < MinObjectInScene)
             return true;
         else
             return false;
+    }
+
+    protected override void OnGet(Resourse spawnObject)
+    {
+        base.OnGet(spawnObject);
+        spawnObject.Init(this);
     }
 }

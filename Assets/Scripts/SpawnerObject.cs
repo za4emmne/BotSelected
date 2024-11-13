@@ -45,14 +45,14 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
             _spawnCoroutine = StartCoroutine(SpawnWithDelay());
     }
 
-    public virtual T Create(Vector3 vector3)
+    protected virtual T Create(Vector3 vector3)
     {
         T spawnObject = Instantiate(_prefab, vector3, Quaternion.identity);
 
         return spawnObject;
     }
 
-    public virtual void OnGet(T spawnObject)
+    protected virtual void OnGet(T spawnObject)
     {
         spawnObject.transform.parent = transform;
         spawnObject.gameObject.SetActive(true);
@@ -98,7 +98,7 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
 
         while (_activeObject.Count < _maxObjectsInScene)
         {
-            _objectPool.Get();
+            T obj = _objectPool.Get();
             yield return waitSpawn;
         }
 

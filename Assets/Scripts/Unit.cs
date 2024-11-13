@@ -1,100 +1,65 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
-    public bool IsBusy => _isBusy;
-
-    [SerializeField] private float _speed = 3f;
-    [SerializeField] private bool _isBusy;
-    [SerializeField] private bool _isPutUpResourse;
-
-    private Resourse _target;
+    private Base _base;
+    private bool _isBusy;
+    private float _speed;
     private Coroutine _coroutine;
+    private Resourse _target;
+
+    public event Action OnReached;
+
+    public bool IsBusy => _isBusy;
 
     private void Start()
     {
-        _target = null;
-        _isPutUpResourse = false;
+        _coroutine = null;
         _isBusy = false;
+        _speed = 6.0f;
     }
 
-    public void ChangeStatus()
+    public void Init(Base baseBot)
+    {
+        _base = baseBot;
+    }
+
+    public bool ChangeStatus()
     {
         _isBusy = !_isBusy;
+        return _isBusy;
     }
 
-    public void TakeResourse(Resourse resourse)
+    public void Move(Transform target)
     {
-        _target = resourse;
-
-        if (_coroutine == null)
-        {
-            _coroutine = StartCoroutine(MoveToTarget(_target.transform));
-        }
+        _target = target.GetComponent<Resourse>();
+        _coroutine = StartCoroutine(MoveToTarget(target));
     }
 
     private IEnumerator MoveToTarget(Transform target)
     {
-        while (transform.position != target.transform.position)
+        while (transform.position != target.position)
         {
-            transform.LookAt(_target.transform);
-            transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
-
-            if (target != null)
-            {
-                transform.position = Vector3.MoveTowards(transform.position,
-                            target.transform.position, _speed * Time.deltaTime);
-            }
-
+            transform.position = Vector3.MoveTowards(transform.position, target.position, _speed * Time.deltaTime);
             yield return null;
         }
 
-        PutOnResourse();
+        _coroutine = null;
     }
-
-    //private void PutResourse(Component other)
-    //{
-    //    if (other.TryGetComponent(out Resourse resourse))
-    //    {
-    //        if (resourse == _target)
-    //        {
-    //            _target.transform.parent = gameObject.transform;
-    //            StopCoroutine(_coroutine);
-    //            ReturnToBase();
-    //        }
-    //    }
-    //}
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent<Resourse>(out Resourse resourse))
+        if(other.TryGetComponent<Resourse>(out Resourse resourse))
         {
-            if (resourse == _target)
+            if(_target == resourse)
             {
-                _target.transform.parent = gameObject.transform;
-                StopCoroutine(_coroutine);
-                _isPutUpResourse = true;
-                ReturnToBase();
+                _target.transform.parent = transform;
+                _coroutine = StartCoroutine(MoveToTarget(_base.transform));
             }
-        }
-    }
-
-    private void ReturnToBase()
-    {
-        _coroutine = StartCoroutine(MoveToTarget(Base.singleton.transform));
-    }
-
-    private void PutOnResourse()
-    {
-        if (_isPutUpResourse)
-        {
-            _target.transform.parent = Base.singleton.transform;
-            Base.singleton.OnAddResourse();
-            _coroutine = null;
-            _isBusy = false;
-            _isPutUpResourse = false;
         }
     }
 }
