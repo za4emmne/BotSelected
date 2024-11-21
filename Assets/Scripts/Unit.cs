@@ -36,8 +36,8 @@ public class Unit : MonoBehaviour
 
     public void Move(Transform target)
     {
-        _target = target.GetComponent<Resourse>();
         _coroutine = StartCoroutine(MoveToTarget(target));
+        _target = target.GetComponent<Resourse>();
     }
 
     private IEnumerator MoveToTarget(Transform target)
@@ -51,14 +51,35 @@ public class Unit : MonoBehaviour
         _coroutine = null;
     }
 
+    private void ReturnToBase()
+    {
+        StopCoroutine(_coroutine);
+        _coroutine = StartCoroutine(MoveToTarget(_base.transform));
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if(other.TryGetComponent<Resourse>(out Resourse resourse))
+        if (other.TryGetComponent<Resourse>(out Resourse resourse))
         {
-            if(_target == resourse)
+            if (_target == resourse)
             {
                 _target.transform.parent = transform;
-                _coroutine = StartCoroutine(MoveToTarget(_base.transform));
+                ReturnToBase();
+            }
+        }
+        if (other.TryGetComponent<Base>(out Base BaseBots))
+        {
+            if (_isBusy)
+            {
+                _target.Release();
+                _base.AddResourse();
+
+                if (_coroutine != null)
+                {
+                    StopCoroutine(_coroutine);
+                }
+
+                ChangeStatus();
             }
         }
     }

@@ -10,12 +10,16 @@ public class Resourse : MonoBehaviour
         _generator = generator;
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void Release()
     {
-        if (other.TryGetComponent<Base>(out Base botBase))
-        {
-            transform.parent = botBase.transform;
-            _generator.OnRelease(this);
-        }
+        _generator.OnRelease(this);
     }
+
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if (other.TryGetComponent<Base>(out Base botBase))
+    //    {
+    //generator.OnRelease(this);
+    //    }
+    //}
 }

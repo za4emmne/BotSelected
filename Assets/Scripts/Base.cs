@@ -2,23 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Base : MonoBehaviour
 {
     [SerializeField] private UnitGenerator _unitGenerator;
     [SerializeField] private BaseScaner _scaner;
+    [SerializeField] private Text _resourseCountText;
 
     private List<Resourse> _freeResourses;
     private List<Resourse> _baseResourses;
     private List<Unit> _freeBots;
+    private int _resourseCount;
 
     private void Start()
     {
-        _baseResourses = new List<Resourse>();
-        _freeResourses = new List<Resourse>();
-        _freeBots = new List<Unit>();
+        _resourseCount = 0;
+        _resourseCountText.text = "Ресурсов на базе: " + _resourseCount;
+        _baseResourses = new();
+        _freeResourses = new();
+        _freeBots = new();
         _unitGenerator.StartGeneration();
-
         StartCoroutine(Work());
     }
 
@@ -26,27 +30,39 @@ public class Base : MonoBehaviour
     {
         while (enabled)
         {
-            _freeResourses = _scaner.Scan();
+            SelectedResourses();
+            SelectedBots();
 
-            if (_freeResourses.Count > 0)
+            if (TryGetFreeResource(out Resourse resourse) && TryGetFreeUnit(out Unit unit))
             {
-                SelectedBots();
-
-                foreach (Unit unit in _freeBots)
-                {
-                    unit.Move(_freeResourses[0].transform);
-                    unit.ChangeStatus();
-                    _baseResourses.Add(_freeResourses[0]);
-                }
+                unit.ChangeStatus();
+                unit.Move(resourse.transform);
+                _freeResourses.Remove(resourse);
+                _baseResourses.Add(resourse);
             }
-            else
-            {
-                Debug.Log("резурсов нет");
-            }
-
 
             yield return null;
         }
+    }
+
+    public void AddResourse()
+    {
+        _resourseCount++;
+        _resourseCountText.text = "Ресурсов на базе: " + _resourseCount;
+    }
+
+    private bool TryGetFreeUnit(out Unit unit)
+    {
+        unit = _freeBots.FirstOrDefault();
+
+        return unit != null;
+    }
+
+    private bool TryGetFreeResource(out Resourse resourse)
+    {
+        resourse = _freeResourses.FirstOrDefault();
+
+        return resourse != null;
     }
 
     private void SelectedBots()
@@ -57,17 +73,16 @@ public class Base : MonoBehaviour
 
     private void SelectedResourses()
     {
-        _freeResourses = _scaner.Scan();
+        List<Resourse> resourses = _scaner.Scan();
 
-        foreach (Resourse resourse in _freeResourses)
+        foreach (Resourse resource in resourses.Where(resource => CheckAvailabilityInLists(resource) == false))
         {
-            foreach (Resourse baseResourse in _baseResourses)
-            {
-                if(resourse.transform ==  baseResourse.transform)
-                    _freeResourses.Remove(resourse);
-            }
+            _freeResourses.Add(resource);
         }
+    }
 
-        Debug.Log(_freeResourses.Count);
+    private bool CheckAvailabilityInLists(Resourse resourse)
+    {
+        return _freeResourses.Contains(resourse) || _baseResourses.Contains(resourse);
     }
 }

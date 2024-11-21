@@ -5,6 +5,8 @@ using UnityEngine.Pool;
 
 public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
 {
+    [SerializeField] protected int maxObjectsInScene;
+
     [SerializeField] private T _prefab;
     [SerializeField] private float _minPostionX;
     [SerializeField] private float _maxPostionX;
@@ -14,7 +16,7 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
     [SerializeField] private int _poolMaxSize;
     [SerializeField] private float _minDelaySpawn;
     [SerializeField] private float _maxDelaySpawn;
-    [SerializeField] private int _maxObjectsInScene;
+
     [SerializeField] private int _minObjectsInScene;
 
     public int MinObjectInScene => _minObjectsInScene;
@@ -22,7 +24,7 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
 
     private ObjectPool<T> _objectPool;
     private List<T> _activeObject;
-    private Coroutine _spawnCoroutine;
+    protected Coroutine spawnCoroutine;
 
     private void Awake()
     {
@@ -39,10 +41,11 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
         );
     }
 
+
     public virtual void StartGeneration()
     {
-        if (_spawnCoroutine == null)
-            _spawnCoroutine = StartCoroutine(SpawnWithDelay());
+        if (spawnCoroutine == null)
+            spawnCoroutine = StartCoroutine(SpawnWithDelay());
     }
 
     protected virtual T Create(Vector3 vector3)
@@ -70,11 +73,6 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
         Destroy(spawnObject.gameObject);
     }
 
-    //public List<T> GetList()
-    //{
-    //    return _activeObject;
-    //}
-
     protected virtual Vector3 GetRandomPosition()
     {
         float randomPositionX = Random.Range(_minPostionX, _maxPostionX);
@@ -83,25 +81,29 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
         return new Vector3(randomPositionX, 0.55f, randomPositionZ);
     }
 
-    //protected bool IsEmptyResourse()
+    //protected virtual bool IsEnough()
     //{
-    //    if (_activeObject.Count < _minObjectsInScene)
-    //        return true;
-    //    else
+    //    if (ActiveObject.Count < maxObjectsInScene)
+    //    {
     //        return false;
+    //    }
+    //    else
+    //    {
+    //        return true;
+    //    }
     //}
 
     private IEnumerator SpawnWithDelay()
     {
-        float randomDelaySpawn = Random.Range(_minDelaySpawn, _maxDelaySpawn);
-        WaitForSeconds waitSpawn = new WaitForSeconds(randomDelaySpawn);
-
-        while (_activeObject.Count < _maxObjectsInScene)
+        while (enabled)
         {
+            float randomDelaySpawn = Random.Range(_minDelaySpawn, _maxDelaySpawn);
+            WaitForSeconds waitSpawn = new WaitForSeconds(randomDelaySpawn);
             T obj = _objectPool.Get();
+
             yield return waitSpawn;
         }
 
-        _spawnCoroutine = null;
+        spawnCoroutine = null;
     }
 }

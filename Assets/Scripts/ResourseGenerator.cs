@@ -9,18 +9,24 @@ public class ResourseGenerator : SpawnerObject<Resourse>
         StartGeneration();
     }
 
-    public override void StartGeneration()
+    private void Update()
     {
-        if (IsEmptyResourse())
-            base.StartGeneration();
+        CheckResourses();
     }
 
-    private bool IsEmptyResourse() //переделать
+    private void CheckResourses()
     {
         if (ActiveObject.Count < MinObjectInScene)
-            return true;
-        else
-            return false;
+        {
+            StartGeneration();
+        }
+        else if (ActiveObject.Count > maxObjectsInScene)
+        {
+            if (spawnCoroutine != null)
+            {
+                StopCoroutine(spawnCoroutine);
+            }
+        }
     }
 
     protected override void OnGet(Resourse spawnObject)
