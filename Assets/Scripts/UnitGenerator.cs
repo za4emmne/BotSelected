@@ -11,17 +11,6 @@ public class UnitGenerator : SpawnerObject<Unit>
         CheckUnits();
     }
 
-    private void CheckUnits()
-    {
-        if (spawnCoroutine != null)
-        {
-            if (ActiveObject.Count == maxObjectsInScene)
-            {
-                StopCoroutine(spawnCoroutine);
-            }
-        }
-    }
-
     protected override Vector3 GetRandomPosition()
     {
         _basePosition = transform.localPosition;
@@ -32,5 +21,16 @@ public class UnitGenerator : SpawnerObject<Unit>
     {
         base.OnGet(spawnObject);
         spawnObject.Init(_base);
+    }
+
+    private void CheckUnits()
+    {
+        if (spawnCoroutine != null)
+        {
+            if (GetCount() == MaxObjectsInScene)
+            {
+                StopCoroutine(spawnCoroutine);
+            }
+        }
     }
 }

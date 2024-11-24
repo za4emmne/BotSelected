@@ -2,16 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//сканирование карты в заданном радиусе + 
-//возвращение листа отсканированных ресурсов +
 public class BaseScaner : MonoBehaviour
 {
     [SerializeField] private float _scanRadius;
     [SerializeField] private LayerMask _scannLayerMask;
     [SerializeField] private float _delayOnScan;
     [SerializeField] private Base _base;
-
-    public List<Resourse> Resourses => _resourses;
 
     private List<Resourse> _resourses;
 
@@ -46,7 +42,9 @@ public class BaseScaner : MonoBehaviour
                 _resourses.Add(resourse);
         }
         else
+        {
             _resourses.Add(resourse);
+        }
     }
 
     private void DrawScanZone(int pointsCount, Color color)

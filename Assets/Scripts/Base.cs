@@ -51,6 +51,14 @@ public class Base : MonoBehaviour
         _resourseCountText.text = "Ресурсов на базе: " + _resourseCount;
     }
 
+    public Resourse GetResourseRecycled()
+    {
+        Resourse resourse = new();
+        resourse = _baseResourses.FirstOrDefault();
+
+        return resourse;
+    }
+
     private bool TryGetFreeUnit(out Unit unit)
     {
         unit = _freeBots.FirstOrDefault();
@@ -68,7 +76,14 @@ public class Base : MonoBehaviour
     private void SelectedBots()
     {
         _freeBots.Clear();
-        _freeBots = _unitGenerator.ActiveObject.Where(unit => unit.IsBusy == false).ToList();
+
+        for (int i = 0; i < _unitGenerator.GetCount(); i++)
+        {
+            if (_unitGenerator.GetObjectForIndex(i).IsBusy == false)
+            {
+                _freeBots.Add(_unitGenerator.GetObjectForIndex(i));
+            }
+        }
     }
 
     private void SelectedResourses()

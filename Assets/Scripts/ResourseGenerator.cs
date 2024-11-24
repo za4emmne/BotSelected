@@ -1,9 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ResourseGenerator : SpawnerObject<Resourse>
 {
+    [SerializeField] private Base _base;
+
     private void Start()
     {
         StartGeneration();
@@ -11,16 +15,17 @@ public class ResourseGenerator : SpawnerObject<Resourse>
 
     private void Update()
     {
-        CheckResourses();
+        ControlGenerationResorse();
     }
 
-    private void CheckResourses()
+    private void ControlGenerationResorse()
     {
-        if (ActiveObject.Count < MinObjectInScene)
+        if (GetCount() < MinObjectsInScene)
         {
             StartGeneration();
         }
-        else if (ActiveObject.Count > maxObjectsInScene)
+        
+        if (GetCount() > MaxObjectsInScene)
         {
             if (spawnCoroutine != null)
             {
@@ -31,7 +36,8 @@ public class ResourseGenerator : SpawnerObject<Resourse>
 
     protected override void OnGet(Resourse spawnObject)
     {
+        spawnObject.PutOnGarage += OnRelease;
+        spawnObject.transform.position = GetRandomPosition();
         base.OnGet(spawnObject);
-        spawnObject.Init(this);
     }
 }

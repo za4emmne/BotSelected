@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Pool;
 
 public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
 {
-    [SerializeField] protected int maxObjectsInScene;
+    [SerializeField] protected int MaxObjectsInScene;
+    [SerializeField] protected int MinObjectsInScene;
 
     [SerializeField] private T _prefab;
     [SerializeField] private float _minPostionX;
@@ -17,49 +19,39 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
     [SerializeField] private float _minDelaySpawn;
     [SerializeField] private float _maxDelaySpawn;
 
-    [SerializeField] private int _minObjectsInScene;
-
-    public int MinObjectInScene => _minObjectsInScene;
-    public List<T> ActiveObject => _activeObject;
-
+    protected Coroutine spawnCoroutine;
     private ObjectPool<T> _objectPool;
     private List<T> _activeObject;
-    protected Coroutine spawnCoroutine;
 
     private void Awake()
     {
         _activeObject = new List<T>();
         _objectPool = new ObjectPool<T>
         (
-            createFunc: () => Create(GetRandomPosition()), //действия при создании объекта
-            actionOnGet: (spawnObject) => OnGet(spawnObject), //действия при взятии свободного объекта из пула
-            actionOnRelease: (spawnObject) => OnRelease(spawnObject), //действия при возвращении объекта в пул
-            actionOnDestroy: (spawnerObject) => Delete(spawnerObject), //действия при удалении объекта из пула
-            collectionCheck: true, //необходимо ли проверять коллекцию при возвращении в пул, работает только в редакторе
-            defaultCapacity: _poolCapacity, //размер пула по умолчанию
-            maxSize: _poolMaxSize //максимальный размер пула
+            createFunc: () => Create(GetRandomPosition()),
+            actionOnGet: (spawnObject) => OnGet(spawnObject),
+            actionOnRelease: (spawnObject) => OnRelease(spawnObject),
+            actionOnDestroy: (spawnerObject) => Delete(spawnerObject),
+            collectionCheck: true,
+            defaultCapacity: _poolCapacity,
+            maxSize: _poolMaxSize
         );
     }
 
+    public T GetObjectForIndex(int index)
+    {
+        return _activeObject.ElementAt(index);
+    }
+
+    public int GetCount()
+    {
+        return _activeObject.Count;
+    }
 
     public virtual void StartGeneration()
     {
         if (spawnCoroutine == null)
             spawnCoroutine = StartCoroutine(SpawnWithDelay());
-    }
-
-    protected virtual T Create(Vector3 vector3)
-    {
-        T spawnObject = Instantiate(_prefab, vector3, Quaternion.identity);
-
-        return spawnObject;
-    }
-
-    protected virtual void OnGet(T spawnObject)
-    {
-        spawnObject.transform.parent = transform;
-        spawnObject.gameObject.SetActive(true);
-        _activeObject.Add(spawnObject);
     }
 
     public virtual void OnRelease(T spawnObject)
@@ -72,6 +64,17 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
     {
         Destroy(spawnObject.gameObject);
     }
+    protected virtual T Create(Vector3 vector3)
+    {
+        return Instantiate(_prefab, vector3, Quaternion.identity);
+    }
+
+    protected virtual void OnGet(T spawnObject)
+    {
+        spawnObject.transform.parent = transform;
+        spawnObject.gameObject.SetActive(true);
+        _activeObject.Add(spawnObject);
+    }
 
     protected virtual Vector3 GetRandomPosition()
     {
@@ -80,18 +83,6 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
 
         return new Vector3(randomPositionX, 0.55f, randomPositionZ);
     }
-
-    //protected virtual bool IsEnough()
-    //{
-    //    if (ActiveObject.Count < maxObjectsInScene)
-    //    {
-    //        return false;
-    //    }
-    //    else
-    //    {
-    //        return true;
-    //    }
-    //}
 
     private IEnumerator SpawnWithDelay()
     {
