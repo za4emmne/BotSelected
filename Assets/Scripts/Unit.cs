@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class Unit : MonoBehaviour
 {
@@ -45,7 +46,7 @@ public class Unit : MonoBehaviour
                     StopCoroutine(_coroutine);
                 }
 
-                ChangeStatus();
+                IsChangeBusyStatus();
             }
         }
     }
@@ -55,7 +56,7 @@ public class Unit : MonoBehaviour
         _base = baseBot;
     }
 
-    public bool ChangeStatus()
+    public bool IsChangeBusyStatus()
     {
         _isBusy = !_isBusy;
         return _isBusy;
@@ -64,7 +65,11 @@ public class Unit : MonoBehaviour
     public void Move(Transform target)
     {
         _coroutine = StartCoroutine(MoveToTarget(target));
-        _target = target.GetComponent<Resourse>();
+
+        if(target.GetComponent<Resourse>() != null)
+        {
+            _target = target.GetComponent<Resourse>();
+        }
     }
 
     private IEnumerator MoveToTarget(Transform target)

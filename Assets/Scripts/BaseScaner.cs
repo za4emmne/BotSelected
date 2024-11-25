@@ -9,11 +9,17 @@ public class BaseScaner : MonoBehaviour
     [SerializeField] private float _delayOnScan;
     [SerializeField] private Base _base;
 
+    private int points = 100;
+    private LineRenderer _lineRenderer;
     private List<Resourse> _resourses;
 
     private void Start()
     {
+        _lineRenderer = GetComponent<LineRenderer>();
         _resourses = new List<Resourse>();
+        _lineRenderer.positionCount = points; 
+        _lineRenderer.loop = true;
+        DrawCircleShape();
     }
 
     private void Update()
@@ -65,5 +71,19 @@ public class BaseScaner : MonoBehaviour
             Debug.DrawLine(circlePoints[i], circlePoints[i + 1], color);
 
         Debug.DrawLine(circlePoints[0], circlePoints[circlePoints.Count - 1], color);
+    }
+
+    private void DrawCircleShape()
+    {
+        float angleStep = 360f / points;  // Шаг угла между точками
+
+        for (int i = 0; i < points; i++)
+        {
+            float angle = i * angleStep * Mathf.Deg2Rad;
+            float x = Mathf.Cos(angle) * _scanRadius;
+            float y = Mathf.Sin(angle) * _scanRadius;
+
+            _lineRenderer.SetPosition(i, new Vector3(x, 0.1f, y)); // Рисуем точки в 2D
+        }
     }
 }

@@ -19,13 +19,13 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
     [SerializeField] private float _minDelaySpawn;
     [SerializeField] private float _maxDelaySpawn;
 
-    protected Coroutine spawnCoroutine;
+    protected Coroutine SpawnCoroutine;
     private ObjectPool<T> _objectPool;
-    private List<T> _activeObject;
+    private List<T> _activeObjects;
 
     private void Awake()
     {
-        _activeObject = new List<T>();
+        _activeObjects = new List<T>();
         _objectPool = new ObjectPool<T>
         (
             createFunc: () => Create(GetRandomPosition()),
@@ -40,24 +40,24 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
 
     public T GetObjectForIndex(int index)
     {
-        return _activeObject.ElementAt(index);
+        return _activeObjects[index];
     }
 
     public int GetCount()
     {
-        return _activeObject.Count;
+        return _activeObjects.Count;
     }
 
     public virtual void StartGeneration()
     {
-        if (spawnCoroutine == null)
-            spawnCoroutine = StartCoroutine(SpawnWithDelay());
+        if (SpawnCoroutine == null)
+            SpawnCoroutine = StartCoroutine(SpawnWithDelay());
     }
 
     public virtual void OnRelease(T spawnObject)
     {
         spawnObject.gameObject.SetActive(false);
-        _activeObject.Remove(spawnObject);
+        _activeObjects.Remove(spawnObject);
     }
 
     public virtual void Delete(T spawnObject)
@@ -73,7 +73,7 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
     {
         spawnObject.transform.parent = transform;
         spawnObject.gameObject.SetActive(true);
-        _activeObject.Add(spawnObject);
+        _activeObjects.Add(spawnObject);
     }
 
     protected virtual Vector3 GetRandomPosition()
@@ -95,6 +95,6 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
             yield return waitSpawn;
         }
 
-        spawnCoroutine = null;
+        SpawnCoroutine = null;
     }
 }

@@ -27,9 +27,9 @@ public class ResourseGenerator : SpawnerObject<Resourse>
         
         if (GetCount() > MaxObjectsInScene)
         {
-            if (spawnCoroutine != null)
+            if (SpawnCoroutine != null)
             {
-                StopCoroutine(spawnCoroutine);
+                StopCoroutine(SpawnCoroutine);
             }
         }
     }

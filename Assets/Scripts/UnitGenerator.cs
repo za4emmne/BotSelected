@@ -8,7 +8,7 @@ public class UnitGenerator : SpawnerObject<Unit>
 
     private void Update()
     {
-        CheckUnits();
+        StopGenerateUnits();
     }
 
     protected override Vector3 GetRandomPosition()
@@ -23,13 +23,13 @@ public class UnitGenerator : SpawnerObject<Unit>
         spawnObject.Init(_base);
     }
 
-    private void CheckUnits()
+    private void StopGenerateUnits()
     {
-        if (spawnCoroutine != null)
+        if (SpawnCoroutine != null)
         {
             if (GetCount() == MaxObjectsInScene)
             {
-                StopCoroutine(spawnCoroutine);
+                StopCoroutine(SpawnCoroutine);
             }
         }
     }

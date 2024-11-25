@@ -1,24 +1,26 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Base : MonoBehaviour
 {
     [SerializeField] private UnitGenerator _unitGenerator;
     [SerializeField] private BaseScaner _scaner;
-    [SerializeField] private Text _resourseCountText;
 
     private List<Resourse> _freeResourses;
     private List<Resourse> _baseResourses;
     private List<Unit> _freeBots;
     private int _resourseCount;
 
+    public event Action ChangedResourseCount;
+
+    public int ResourseCount => _resourseCount;
+
     private void Start()
     {
         _resourseCount = 0;
-        _resourseCountText.text = "Ресурсов на базе: " + _resourseCount;
         _baseResourses = new();
         _freeResourses = new();
         _freeBots = new();
@@ -30,12 +32,12 @@ public class Base : MonoBehaviour
     {
         while (enabled)
         {
-            SelectedResourses();
-            SelectedBots();
+            SelectResourses();
+            SelectBots();
 
             if (TryGetFreeResource(out Resourse resourse) && TryGetFreeUnit(out Unit unit))
             {
-                unit.ChangeStatus();
+                unit.IsChangeBusyStatus();
                 unit.Move(resourse.transform);
                 _freeResourses.Remove(resourse);
                 _baseResourses.Add(resourse);
@@ -48,15 +50,7 @@ public class Base : MonoBehaviour
     public void AddResourse()
     {
         _resourseCount++;
-        _resourseCountText.text = "Ресурсов на базе: " + _resourseCount;
-    }
-
-    public Resourse GetResourseRecycled()
-    {
-        Resourse resourse = new();
-        resourse = _baseResourses.FirstOrDefault();
-
-        return resourse;
+        ChangedResourseCount?.Invoke();
     }
 
     private bool TryGetFreeUnit(out Unit unit)
@@ -73,7 +67,7 @@ public class Base : MonoBehaviour
         return resourse != null;
     }
 
-    private void SelectedBots()
+    private void SelectBots()
     {
         _freeBots.Clear();
 
@@ -86,7 +80,7 @@ public class Base : MonoBehaviour
         }
     }
 
-    private void SelectedResourses()
+    private void SelectResourses()
     {
         List<Resourse> resourses = _scaner.Scan();
 
