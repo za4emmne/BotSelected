@@ -3,12 +3,21 @@ using UnityEngine;
 public class UnitGenerator : SpawnerObject<Unit>
 {
     [SerializeField] private Base _base;
+    [SerializeField] private int _startCountUnits;
 
     private Vector3 _basePosition;
 
-    private void Update()
+    public void InitStartUnit()
     {
-        CountNumberUnits();
+        for (int i = 0; i < _startCountUnits; i++)
+        {
+            GenerateObject();
+        }
+    }
+
+    public void Create()
+    {
+        base.GenerateObject();
     }
 
     protected override Vector3 GetRandomPosition()
@@ -21,16 +30,5 @@ public class UnitGenerator : SpawnerObject<Unit>
     {
         base.OnGet(spawnObject);
         spawnObject.Init(_base);
-    }
-
-    private void CountNumberUnits()
-    {
-        if (SpawnCoroutine != null)
-        {
-            if (GetCount() == MaxObjectsInScene)
-            {
-                StopCoroutine(SpawnCoroutine);
-            }
-        }
     }
 }

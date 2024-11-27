@@ -12,7 +12,6 @@ public class Base : MonoBehaviour
 
     private List<Resourse> _freeResourses;
     private List<Resourse> _busyResourses;
-    private List<Resourse> _baseResourses;
     private List<Unit> _freeBots;
     private int _resourseCount;
 
@@ -25,10 +24,25 @@ public class Base : MonoBehaviour
         _resourseCount = 0;
         _busyResourses = new();
         _freeResourses = new();
-        _baseResourses = new();
         _freeBots = new();
-        _unitGenerator.StartGeneration();
+        _unitGenerator.InitStartUnit();
         StartCoroutine(Work());
+    }
+
+    private void OnEnable()
+    {
+        _garage.GainThreeResourse += CreateUnit;
+    }
+
+    private void OnDisable()
+    {
+        _garage.GainThreeResourse -= CreateUnit;
+    }
+
+    public void AddResourse(Resourse resourse)
+    {
+        _garage.AddResourse(resourse);
+        ChangedResourseCount?.Invoke();
     }
 
     private IEnumerator Work()
@@ -49,10 +63,9 @@ public class Base : MonoBehaviour
         }
     }
 
-    public void AddResourse(Resourse resourse)
+    private void CreateUnit()
     {
-        _garage.AddResourse(resourse);
-        ChangedResourseCount?.Invoke();
+        _unitGenerator.Create();
     }
 
     private bool TryGetFreeUnit(out Unit unit)

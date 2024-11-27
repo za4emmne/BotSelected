@@ -16,10 +16,7 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
     [SerializeField] private float _maxPositionZ;
     [SerializeField] private int _poolCapacity;
     [SerializeField] private int _poolMaxSize;
-    [SerializeField] private float _minDelaySpawn;
-    [SerializeField] private float _maxDelaySpawn;
 
-    protected Coroutine SpawnCoroutine;
     private ObjectPool<T> _objectPool;
     private List<T> _activeObjects;
 
@@ -48,10 +45,9 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
         return _activeObjects.Count;
     }
 
-    public virtual void StartGeneration()
+    protected virtual void GenerateObject()
     {
-        if (SpawnCoroutine == null)
-            SpawnCoroutine = StartCoroutine(SpawnWithDelay());
+        T obj = _objectPool.Get();
     }
 
     public virtual void OnRelease(T spawnObject)
@@ -82,19 +78,5 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
         float randomPositionZ = Random.Range(_minPositionZ, _maxPositionZ);
 
         return new Vector3(randomPositionX, 0.55f, randomPositionZ);
-    }
-
-    private IEnumerator SpawnWithDelay()
-    {
-        while (enabled)
-        {
-            float randomDelaySpawn = Random.Range(_minDelaySpawn, _maxDelaySpawn);
-            WaitForSeconds waitSpawn = new WaitForSeconds(randomDelaySpawn);
-            T obj = _objectPool.Get();
-
-            yield return waitSpawn;
-        }
-
-        SpawnCoroutine = null;
     }
 }

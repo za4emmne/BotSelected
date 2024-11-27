@@ -1,16 +1,20 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class ResourseGenerator : SpawnerObject<Resourse>
 {
     [SerializeField] private Base _base;
+    [SerializeField] private float _minDelaySpawn;
+    [SerializeField] private float _maxDelaySpawn;
+
+    private Coroutine SpawnCoroutine;
 
     private void Start()
     {
-        StartGeneration();
+        SpawnCoroutine = StartCoroutine(SpawnWithDelay());
     }
 
     private void Update()
@@ -22,7 +26,7 @@ public class ResourseGenerator : SpawnerObject<Resourse>
     {
         if (GetCount() < MinObjectsInScene)
         {
-            StartGeneration();
+            SpawnCoroutine = StartCoroutine(SpawnWithDelay());
         }
         
         if (GetCount() > MaxObjectsInScene)
@@ -40,4 +44,18 @@ public class ResourseGenerator : SpawnerObject<Resourse>
         spawnObject.transform.position = GetRandomPosition();
         base.OnGet(spawnObject);
     }
+    private IEnumerator SpawnWithDelay()
+    {
+        while (enabled)
+        {
+            float randomDelaySpawn = Random.Range(_minDelaySpawn, _maxDelaySpawn);
+            WaitForSeconds waitSpawn = new WaitForSeconds(randomDelaySpawn);
+            base.GenerateObject();
+
+            yield return waitSpawn;
+        }
+
+        SpawnCoroutine = null;
+    }
 }
+

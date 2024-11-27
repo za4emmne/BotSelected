@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[RequireComponent (typeof(Mover))]
+[RequireComponent(typeof(Mover))]
 
 public class Unit : MonoBehaviour
 {
@@ -23,7 +23,6 @@ public class Unit : MonoBehaviour
         {
             if (_target == resourse)
             {
-                Debug.Log("GotUp");
                 _target.transform.parent = transform;
                 _mover.ReturnToBase(_base.transform);
             }

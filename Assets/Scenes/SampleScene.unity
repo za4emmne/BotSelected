@@ -461,9 +461,8 @@ MonoBehaviour:
   _maxPositionZ: 15
   _poolCapacity: 3
   _poolMaxSize: 3
-  _minDelaySpawn: 0
-  _maxDelaySpawn: 1
   _base: {fileID: 350134078}
+  _startCountUnits: 3
 --- !u!120 &350134080
 LineRenderer:
   serializedVersion: 2
@@ -988,9 +987,9 @@ MonoBehaviour:
   _maxPositionZ: 7
   _poolCapacity: 2
   _poolMaxSize: 10
-  _minDelaySpawn: 0
-  _maxDelaySpawn: 3
   _base: {fileID: 350134078}
+  _minDelaySpawn: 2
+  _maxDelaySpawn: 5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
