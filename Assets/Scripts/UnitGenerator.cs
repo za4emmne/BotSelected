@@ -8,7 +8,7 @@ public class UnitGenerator : SpawnerObject<Unit>
 
     private void Update()
     {
-        StopGenerateUnits();
+        CountNumberUnits();
     }
 
     protected override Vector3 GetRandomPosition()
@@ -23,7 +23,7 @@ public class UnitGenerator : SpawnerObject<Unit>
         spawnObject.Init(_base);
     }
 
-    private void StopGenerateUnits()
+    private void CountNumberUnits()
     {
         if (SpawnCoroutine != null)
         {

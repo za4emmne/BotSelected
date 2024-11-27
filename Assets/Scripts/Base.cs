@@ -7,9 +7,11 @@ using UnityEngine;
 public class Base : MonoBehaviour
 {
     [SerializeField] private UnitGenerator _unitGenerator;
+    [SerializeField] private BaseResourseGarage _garage;
     [SerializeField] private BaseScaner _scaner;
 
     private List<Resourse> _freeResourses;
+    private List<Resourse> _busyResourses;
     private List<Resourse> _baseResourses;
     private List<Unit> _freeBots;
     private int _resourseCount;
@@ -21,8 +23,9 @@ public class Base : MonoBehaviour
     private void Start()
     {
         _resourseCount = 0;
-        _baseResourses = new();
+        _busyResourses = new();
         _freeResourses = new();
+        _baseResourses = new();
         _freeBots = new();
         _unitGenerator.StartGeneration();
         StartCoroutine(Work());
@@ -37,19 +40,18 @@ public class Base : MonoBehaviour
 
             if (TryGetFreeResource(out Resourse resourse) && TryGetFreeUnit(out Unit unit))
             {
-                unit.IsChangeBusyStatus();
-                unit.Move(resourse.transform);
+                unit.IsGetJob(resourse);
                 _freeResourses.Remove(resourse);
-                _baseResourses.Add(resourse);
+                _busyResourses.Add(resourse);
             }
 
             yield return null;
         }
     }
 
-    public void AddResourse()
+    public void AddResourse(Resourse resourse)
     {
-        _resourseCount++;
+        _garage.AddResourse(resourse);
         ChangedResourseCount?.Invoke();
     }
 
@@ -92,6 +94,6 @@ public class Base : MonoBehaviour
 
     private bool CheckAvailabilityInLists(Resourse resourse)
     {
-        return _freeResourses.Contains(resourse) || _baseResourses.Contains(resourse);
+        return _freeResourses.Contains(resourse) || _busyResourses.Contains(resourse);
     }
 }

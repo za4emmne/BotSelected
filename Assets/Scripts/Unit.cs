@@ -1,25 +1,20 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
+
+[RequireComponent (typeof(Mover))]
 
 public class Unit : MonoBehaviour
 {
+    private Mover _mover;
+    private Resourse _target;
     private Base _base;
     private bool _isBusy;
-    private float _speed;
-    private Coroutine _coroutine;
-    private Resourse _target;
 
     public bool IsBusy => _isBusy;
 
     private void Start()
     {
-        _coroutine = null;
+        _mover = GetComponent<Mover>();
         _isBusy = false;
-        _speed = 6.0f;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -28,8 +23,9 @@ public class Unit : MonoBehaviour
         {
             if (_target == resourse)
             {
+                Debug.Log("GotUp");
                 _target.transform.parent = transform;
-                ReturnToBase();
+                _mover.ReturnToBase(_base.transform);
             }
         }
 
@@ -38,15 +34,10 @@ public class Unit : MonoBehaviour
             if (_isBusy)
             {
                 _target.transform.parent = _base.transform;
+                _base.AddResourse(_target);
                 _target.Release();
-                _base.AddResourse();
-
-                if (_coroutine != null)
-                {
-                    StopCoroutine(_coroutine);
-                }
-
-                IsChangeBusyStatus();
+                _mover.StopMove();
+                _isBusy = false;
             }
         }
     }
@@ -56,37 +47,11 @@ public class Unit : MonoBehaviour
         _base = baseBot;
     }
 
-    public bool IsChangeBusyStatus()
+    public bool IsGetJob(Resourse resourse)
     {
+        _target = resourse;
+        _mover.Move(resourse.transform);
         _isBusy = !_isBusy;
         return _isBusy;
-    }
-
-    public void Move(Transform target)
-    {
-        _coroutine = StartCoroutine(MoveToTarget(target));
-
-        if(target.GetComponent<Resourse>() != null)
-        {
-            _target = target.GetComponent<Resourse>();
-        }
-    }
-
-    private IEnumerator MoveToTarget(Transform target)
-    {
-        while (transform.position != target.position)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, target.position, _speed * Time.deltaTime);
-
-            yield return null;
-        }
-
-        _coroutine = null;
-    }
-
-    private void ReturnToBase()
-    {
-        StopCoroutine(_coroutine);
-        _coroutine = StartCoroutine(MoveToTarget(_base.transform));
     }
 }

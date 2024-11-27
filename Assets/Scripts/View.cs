@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class View : MonoBehaviour
 {
     [SerializeField] private Base _base;
+    [SerializeField] private BaseResourseGarage _garage;
     [SerializeField] private Text _resourseCountText;
 
     private int _resourseCount;
@@ -25,7 +26,7 @@ public class View : MonoBehaviour
 
     private void ChangeResourseView()
     {
-        _resourseCount = _base.ResourseCount;
+        _resourseCount = _garage.GetResourseCount();
         _resourseCountText.text = "Ресурсов на базе: " + _resourseCount;
     }
 
