@@ -11,7 +11,7 @@ public class Mover : MonoBehaviour
     private void Start()
     {
         _coroutine = null;
-        _speed = 6.0f;
+        _speed = 3.0f;
     }
 
     public void Move(Transform target)
