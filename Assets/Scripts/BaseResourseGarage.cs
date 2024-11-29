@@ -17,9 +17,8 @@ public class BaseResourseGarage : MonoBehaviour
     public void AddResourse(Resourse resourse)
     {
         _baseResourse.Add(resourse);
-        Debug.Log(_baseResourse.Count);
 
-        if(_baseResourse.Count >= 3)
+        if (_baseResourse.Count >= 3)
         {
             _baseResourse.RemoveRange(0, 3);
             GainThreeResourse?.Invoke();
@@ -28,6 +27,10 @@ public class BaseResourseGarage : MonoBehaviour
 
     public int GetResourseCount()
     {
-        return _baseResourse.Count;
+        if (_baseResourse == null)
+            return 0;
+        else
+            return _baseResourse.Count;
+
     }
 }
