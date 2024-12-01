@@ -35,10 +35,15 @@ public class Unit : MonoBehaviour
                 _target.transform.parent = _base.transform;
                 _base.AddResourse(_target);
                 _target.Release();
-                _mover.StopMove();
                 _isBusy = false;
             }
         }
+    }
+
+    public void MoveToTarget(Transform position)
+    {
+        _isBusy = !_isBusy;
+        _mover.Move(position);
     }
 
     public void Init(Base baseBot)

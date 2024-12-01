@@ -6,10 +6,15 @@ public class FlagGenerator : SpawnerObject<Flag>
 {
     private Vector3 target;
 
-    public void CreateFlag(Vector3 position)
+    public Flag CreateFlag(Vector3 position)
     {
-        target = position;
-        base.GenerateObject();
+        return base.Create(position);
+    }
+
+    public void Replace(Flag flag, Vector3 position)
+    {
+        OnGet(flag);
+        flag.transform.position = position;
     }
 
     protected override Vector3 GetRandomPosition()

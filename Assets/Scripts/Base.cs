@@ -7,6 +7,7 @@ using UnityEngine;
 public class Base : MonoBehaviour
 {
     [SerializeField] private UnitGenerator _unitGenerator;
+    [SerializeField] private FlagSetter _flagSetter;
     [SerializeField] private BaseResourseGarage _garage;
     [SerializeField] private BaseScaner _scaner;
 
@@ -32,11 +33,13 @@ public class Base : MonoBehaviour
     private void OnEnable()
     {
         _garage.GainThreeResourse += CreateUnit;
+        _flagSetter.BuildNewBase += Build;
     }
 
     private void OnDisable()
     {
         _garage.GainThreeResourse -= CreateUnit;
+        _flagSetter.BuildNewBase -= Build;
     }
 
     public void AddResourse(Resourse resourse)
@@ -60,6 +63,17 @@ public class Base : MonoBehaviour
             }
 
             yield return null;
+        }
+    }
+
+    private void Build()
+    {
+        if(_flagSetter.Position() != null && TryGetFreeUnit(out Unit unit))
+        {
+            Debug.Log("base");
+            Transform target = null;
+            target.position = new Vector3(_flagSetter.Position().x, _flagSetter.Position().y, _flagSetter.Position().z);
+            unit.MoveToTarget(target);
         }
     }
 

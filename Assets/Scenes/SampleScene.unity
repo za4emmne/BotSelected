@@ -121,7 +121,7 @@ NavMeshSettings:
     preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: d25d81fc65af7b84aa1944e6586ad4d2, type: 2}
 --- !u!1 &87492375
 GameObject:
   m_ObjectHideFlags: 0
@@ -601,6 +601,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _unitGenerator: {fileID: 350134079}
+  _flagSetter: {fileID: 350134083}
   _garage: {fileID: 350134082}
   _scaner: {fileID: 350134077}
 --- !u!114 &350134079
@@ -784,15 +785,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67a69ec2a8650704c9ff6b4fa3f7d7a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxObjectsInScene: 5
+  MaxObjectsInScene: 1
   MinObjectsInScene: 0
   _prefab: {fileID: 6954354369366289710, guid: cf27f8d1a79128944960d2d35d84bf11, type: 3}
   _minPostionX: 0
   _maxPostionX: 0
   _minPositionZ: 0
   _maxPositionZ: 0
-  _poolCapacity: 3
-  _poolMaxSize: 3
+  _poolCapacity: 1
+  _poolMaxSize: 1
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -904,7 +905,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 40
   m_IsActive: 1
 --- !u!64 &761947741
 MeshCollider:
