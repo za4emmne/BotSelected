@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class BaseResourseGarage : MonoBehaviour
 {
+    [SerializeField] private FlagSetter _flagSetter;
+
     private List<Resourse> _baseResourse;
 
     public event Action GainThreeResourse;
@@ -18,7 +20,7 @@ public class BaseResourseGarage : MonoBehaviour
     {
         _baseResourse.Add(resourse);
 
-        if (_baseResourse.Count >= 3)
+        if (_baseResourse.Count >= 3 && _flagSetter.IsCreated == false)
         {
             _baseResourse.RemoveRange(0, 3);
             GainThreeResourse?.Invoke();

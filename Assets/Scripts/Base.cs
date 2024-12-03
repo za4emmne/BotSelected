@@ -15,6 +15,8 @@ public class Base : MonoBehaviour
     private List<Resourse> _busyResourses;
     private List<Unit> _freeBots;
     private int _resourseCount;
+    private Transform _newBase;
+    
 
     public event Action ChangedResourseCount;
 
@@ -68,12 +70,15 @@ public class Base : MonoBehaviour
 
     private void Build()
     {
+        Debug.Log("base");
+        StopCoroutine(Work());
+
         if(_flagSetter.Position() != null && TryGetFreeUnit(out Unit unit))
         {
-            Debug.Log("base");
-            Transform target = null;
-            target.position = new Vector3(_flagSetter.Position().x, _flagSetter.Position().y, _flagSetter.Position().z);
-            unit.MoveToTarget(target);
+            
+            
+            _newBase.position = new Vector3(_flagSetter.Position().x, _flagSetter.Position().y, _flagSetter.Position().z);
+            unit.MoveToTarget(_newBase);
         }
     }
 

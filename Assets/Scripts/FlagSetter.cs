@@ -16,6 +16,8 @@ public class FlagSetter : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     private bool _canBuild;
     private bool _isCreated;
 
+    public bool IsCreated => _isCreated;
+
     public event Action BuildNewBase;
 
     private void Start()
@@ -83,16 +85,15 @@ public class FlagSetter : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
 
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
             {
-                _target = hit.point;
-
                 if (_canBuild && _isCreated == false)
                 {
+                    _target = hit.point;
                     _flag = _generator.CreateFlag(_target);
                     _isCreated = true;
                 }
-
-                if (_isCreated && _canBuild)
+                else if (_isCreated && _canBuild)
                 {
+                    _target = hit.point;
                     _generator.OnRelease(_flag);
                     _generator.Replace(_flag, _target);
                 }

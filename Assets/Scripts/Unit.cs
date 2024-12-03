@@ -43,7 +43,11 @@ public class Unit : MonoBehaviour
     public void MoveToTarget(Transform position)
     {
         _isBusy = !_isBusy;
-        _mover.Move(position);
+
+        if (position != null)
+        {
+            _mover.Move(position);
+        }
     }
 
     public void Init(Base baseBot)
