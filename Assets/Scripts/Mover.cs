@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,8 @@ public class Mover : MonoBehaviour
 {
     private float _speed;
     private NavMeshAgent _agent;
+
+    public event Action<Transform> OnBaseReached;
 
     private void Awake()
     {
@@ -22,6 +25,11 @@ public class Mover : MonoBehaviour
     public void Move(Transform target)
     {
         _agent.destination = target.position;
+        
+        //if(_agent.remainingDistance ==  0)
+        //{
+        //    OnBaseReached?.Invoke(target);
+        //}
     }
 
     public void ReturnToBase(Transform BaseTransform)

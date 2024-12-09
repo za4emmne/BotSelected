@@ -10,6 +10,7 @@ public class BaseResourseGarage : MonoBehaviour
     private List<Resourse> _baseResourse;
 
     public event Action GainThreeResourse;
+    public event Action OnCanBuilded;
 
     private void Start()
     {
@@ -24,6 +25,11 @@ public class BaseResourseGarage : MonoBehaviour
         {
             _baseResourse.RemoveRange(0, 3);
             GainThreeResourse?.Invoke();
+        }
+
+        if (_baseResourse.Count >= 5 && _flagSetter.IsCreated == true)
+        {
+            OnCanBuilded?.Invoke();
         }
     }
 

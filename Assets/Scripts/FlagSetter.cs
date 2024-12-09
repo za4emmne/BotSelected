@@ -72,9 +72,14 @@ public class FlagSetter : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         _setBaseText.gameObject.SetActive(true);
     }
 
-    public Vector3 Position()
+    public Transform Position()
     {
-        return _target;
+        if (_flag != null)
+        {
+            return _flag.transform;
+        }
+
+        return null;
     }
 
     private void SetFlag()
@@ -101,7 +106,6 @@ public class FlagSetter : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
                 _setBaseText.gameObject.SetActive(false);
                 Time.timeScale = 1;
                 _canBuild = false;
-                BuildNewBase?.Invoke();
             }
         }
     }

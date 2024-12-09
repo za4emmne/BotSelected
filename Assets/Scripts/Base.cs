@@ -14,34 +14,35 @@ public class Base : MonoBehaviour
     private List<Resourse> _freeResourses;
     private List<Resourse> _busyResourses;
     private List<Unit> _freeBots;
-    private int _resourseCount;
-    private Transform _newBase;
-    
+    private Coroutine _coroutine;
+
 
     public event Action ChangedResourseCount;
 
-    public int ResourseCount => _resourseCount;
-
     private void Start()
     {
-        _resourseCount = 0;
         _busyResourses = new();
         _freeResourses = new();
         _freeBots = new();
         _unitGenerator.InitStartUnit();
-        StartCoroutine(Work());
+        _coroutine = StartCoroutine(Work());
     }
 
     private void OnEnable()
     {
         _garage.GainThreeResourse += CreateUnit;
-        _flagSetter.BuildNewBase += Build;
+        _garage.OnCanBuilded += Build;
     }
 
     private void OnDisable()
     {
         _garage.GainThreeResourse -= CreateUnit;
-        _flagSetter.BuildNewBase -= Build;
+        _garage.OnCanBuilded -= Build;
+    }
+
+    public void CreateBase()
+    {
+        Debug.Log("Create");
     }
 
     public void AddResourse(Resourse resourse)
@@ -68,18 +69,27 @@ public class Base : MonoBehaviour
         }
     }
 
+    private IEnumerator GoToNewBase()
+    {
+        while (enabled)
+        {
+            SelectBots();
+
+            if (_flagSetter.Position() != null && TryGetFreeUnit(out Unit unit))
+            {
+                unit.MoveToTarget(_flagSetter.Position());
+                StopCoroutine(_coroutine);
+                _coroutine = StartCoroutine(Work());
+            }
+
+            yield return null;
+        }
+    }
+
     private void Build()
     {
-        Debug.Log("base");
-        StopCoroutine(Work());
-
-        if(_flagSetter.Position() != null && TryGetFreeUnit(out Unit unit))
-        {
-            
-            
-            _newBase.position = new Vector3(_flagSetter.Position().x, _flagSetter.Position().y, _flagSetter.Position().z);
-            unit.MoveToTarget(_newBase);
-        }
+        StopCoroutine(_coroutine);
+        _coroutine = StartCoroutine(GoToNewBase());
     }
 
     private void CreateUnit()

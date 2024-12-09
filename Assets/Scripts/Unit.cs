@@ -19,24 +19,23 @@ public class Unit : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent<Resourse>(out Resourse resourse))
+        if (other.TryGetComponent<Resourse>(out Resourse resourse) && _target == resourse)
         {
-            if (_target == resourse)
-            {
-                _target.transform.parent = transform;
-                _mover.ReturnToBase(_base.transform);
-            }
+            _target.transform.parent = transform;
+            _mover.ReturnToBase(_base.transform);
         }
 
-        if (other.TryGetComponent<Base>(out Base BaseBots))
+        if (other.TryGetComponent<Base>(out Base BaseBots) && transform.childCount > 0 && _isBusy)
         {
-            if (_isBusy)
-            {
-                _target.transform.parent = _base.transform;
-                _base.AddResourse(_target);
-                _target.Release();
-                _isBusy = false;
-            }
+            _isBusy = false;
+            _base.AddResourse(_target);
+            _target.transform.parent = _base.transform;
+            _target.Release();
+        }
+
+        if(other.TryGetComponent<Flag>(out Flag flag) &&_isBusy)
+        {
+            _base.CreateBase();
         }
     }
 
