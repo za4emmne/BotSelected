@@ -7,7 +7,6 @@ using static UnityEngine.GraphicsBuffer;
 public class FlagSetter : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private FlagGenerator _generator;
-    //[SerializeField] private Base _base;
     [SerializeField] private Text _tooltipText;
     [SerializeField] private Text _setBaseText;
 
@@ -22,7 +21,7 @@ public class FlagSetter : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
 
     private void Start()
     {
-        _flag = null;
+        _flag = GetComponent<Flag>();
         _canBuild = false;
         _isCreated = false;
         _setBaseText.gameObject.SetActive(false);
@@ -82,6 +81,11 @@ public class FlagSetter : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         return null;
     }
 
+    public void ChangeCretedStatus()
+    {
+        _isCreated = false;
+    }
+
     private void SetFlag()
     {
         if (Input.GetMouseButtonDown(0))
@@ -99,7 +103,6 @@ public class FlagSetter : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
                 else if (_isCreated && _canBuild)
                 {
                     _target = hit.point;
-                    _generator.OnRelease(_flag);
                     _generator.Replace(_flag, _target);
                 }
 

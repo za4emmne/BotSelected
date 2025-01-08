@@ -8,6 +8,7 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
 {
     [SerializeField] protected int MaxObjectsInScene;
     [SerializeField] protected int MinObjectsInScene;
+    [SerializeField] protected int PoolMaxSize;
 
     [SerializeField] private T _prefab;
     [SerializeField] private float _minPostionX;
@@ -15,13 +16,14 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
     [SerializeField] private float _minPositionZ;
     [SerializeField] private float _maxPositionZ;
     [SerializeField] private int _poolCapacity;
-    [SerializeField] private int _poolMaxSize;
+
 
     private ObjectPool<T> _objectPool;
     private List<T> _activeObjects;
 
     private void Awake()
     {
+        PoolMaxSize = 3;
         _activeObjects = new List<T>();
         _objectPool = new ObjectPool<T>
         (
@@ -31,7 +33,7 @@ public class SpawnerObject<T> : MonoBehaviour where T : MonoBehaviour
             actionOnDestroy: (spawnerObject) => Delete(spawnerObject),
             collectionCheck: true,
             defaultCapacity: _poolCapacity,
-            maxSize: _poolMaxSize
+            maxSize: PoolMaxSize
         );
     }
 

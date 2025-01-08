@@ -10,6 +10,7 @@ public class Base : MonoBehaviour
     [SerializeField] private FlagSetter _flagSetter;
     [SerializeField] private BaseResourseGarage _garage;
     [SerializeField] private BaseScaner _scaner;
+    [SerializeField] private BaseGenerator _generator;
 
     private List<Resourse> _freeResourses;
     private List<Resourse> _busyResourses;
@@ -19,13 +20,13 @@ public class Base : MonoBehaviour
 
     public event Action ChangedResourseCount;
 
-    private void Start()
+    private void Awake()
     {
-        _busyResourses = new();
-        _freeResourses = new();
-        _freeBots = new();
-        _unitGenerator.InitStartUnit();
-        _coroutine = StartCoroutine(Work());
+        _unitGenerator = GetComponent<UnitGenerator>();
+        _flagSetter = GetComponent<FlagSetter>();
+        _generator = GetComponent<BaseGenerator>();
+        _scaner = GetComponent<BaseScaner>();
+        _generator = GetComponent<BaseGenerator>();
     }
 
     private void OnEnable()
@@ -40,9 +41,21 @@ public class Base : MonoBehaviour
         _garage.OnCanBuilded -= Build;
     }
 
-    public void CreateBase()
+    public void Initialize(int countStartUnit)
     {
-        Debug.Log("Create");
+        _busyResourses = new();
+        _freeResourses = new();
+        _freeBots = new();
+        _unitGenerator.InitStartUnit(countStartUnit);
+        _coroutine = StartCoroutine(Work());
+    }
+
+    public void CreateBase(Flag flag, Unit unit)
+    {
+        Base botBase = _generator.Create(flag.transform);
+        unit.Init(botBase);
+        //botBase.Initialize(flag.transform);
+
     }
 
     public void AddResourse(Resourse resourse)
@@ -71,14 +84,15 @@ public class Base : MonoBehaviour
 
     private IEnumerator GoToNewBase()
     {
-        while (enabled)
+        while (TryGetFreeUnit(out Unit unit) == false)
         {
             SelectBots();
 
-            if (_flagSetter.Position() != null && TryGetFreeUnit(out Unit unit))
+            if (_flagSetter.Position() != null && TryGetFreeUnit(out unit))
             {
                 unit.MoveToTarget(_flagSetter.Position());
                 StopCoroutine(_coroutine);
+                _flagSetter.ChangeCretedStatus();
                 _coroutine = StartCoroutine(Work());
             }
 

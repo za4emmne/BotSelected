@@ -1,3 +1,5 @@
+using System;
+using TMPro;
 using UnityEngine;
 
 [RequireComponent(typeof(Mover))]
@@ -10,6 +12,8 @@ public class Unit : MonoBehaviour
     private bool _isBusy;
 
     public bool IsBusy => _isBusy;
+
+    public event Action<Flag, Unit> OnCreatedBase;
 
     private void Start()
     {
@@ -35,7 +39,9 @@ public class Unit : MonoBehaviour
 
         if(other.TryGetComponent<Flag>(out Flag flag) &&_isBusy)
         {
-            _base.CreateBase();
+            OnCreatedBase?.Invoke(flag, this);
+            _isBusy = false;
+            //_base.CreateBase(flag.transform);
         }
     }
 
@@ -57,7 +63,7 @@ public class Unit : MonoBehaviour
     public bool IsGetJob(Resourse resourse)
     {
         _target = resourse;
-        _mover.Move(resourse.transform);
+        _mover.Move(_target.transform);
         _isBusy = !_isBusy;
         return _isBusy;
     }

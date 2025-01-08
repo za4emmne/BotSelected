@@ -27,7 +27,6 @@ public class View : MonoBehaviour
     private void ChangeResourseView()
     {
         _resourseCount = _garage.GetResourseCount();
-        _resourseCountText.text = "Ресурсов на базе: " + _resourseCount;
+        _resourseCountText.text = "Ресурсов: " + _resourseCount;
     }
-
 }

@@ -1,24 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class FlagGenerator : SpawnerObject<Flag>
+public class FlagGenerator : MonoBehaviour
 {
-    private Vector3 target;
+    [SerializeField] private Flag _prefab;
 
     public Flag CreateFlag(Vector3 position)
     {
-        return base.Create(position);
+        return Instantiate(_prefab, position, Quaternion.identity);
     }
 
-    public void Replace(Flag flag, Vector3 position)
+    public void Replace(Flag flag, Vector3 transform)
     {
-        OnGet(flag);
-        flag.transform.position = position;
-    }
-
-    protected override Vector3 GetRandomPosition()
-    {
-        return target;
+        flag.transform.position = transform;
     }
 }

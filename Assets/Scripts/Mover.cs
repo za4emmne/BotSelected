@@ -25,11 +25,6 @@ public class Mover : MonoBehaviour
     public void Move(Transform target)
     {
         _agent.destination = target.position;
-        
-        //if(_agent.remainingDistance ==  0)
-        //{
-        //    OnBaseReached?.Invoke(target);
-        //}
     }
 
     public void ReturnToBase(Transform BaseTransform)

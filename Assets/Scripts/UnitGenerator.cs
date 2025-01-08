@@ -7,9 +7,9 @@ public class UnitGenerator : SpawnerObject<Unit>
 
     private Vector3 _basePosition;
 
-    public void InitStartUnit()
+    public void InitStartUnit(int count)
     {
-        for (int i = 0; i < _startCountUnits; i++)
+        for (int i = 0; i < count; i++)
         {
             GenerateObject();
         }
@@ -26,9 +26,10 @@ public class UnitGenerator : SpawnerObject<Unit>
         return _basePosition;
     }
 
-    protected override void OnGet(Unit spawnObject)
+    protected override void OnGet(Unit unit)
     {
-        base.OnGet(spawnObject);
-        spawnObject.Init(_base);
+        unit.OnCreatedBase += _base.CreateBase;
+        base.OnGet(unit);
+        unit.Init(_base);
     }
 }

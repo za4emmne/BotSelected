@@ -39,6 +39,5 @@ public class BaseResourseGarage : MonoBehaviour
             return 0;
         else
             return _baseResourse.Count;
-
     }
 }

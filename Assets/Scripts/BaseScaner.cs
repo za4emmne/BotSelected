@@ -16,7 +16,7 @@ public class BaseScaner : MonoBehaviour
     private void Start()
     {
         _lineRenderer = GetComponent<LineRenderer>();
-        _resourses = new List<Resourse>();
+        _resourses = new();
         _lineRenderer.positionCount = points; 
         _lineRenderer.loop = true;
         DrawCircleShape();
