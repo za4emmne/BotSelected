@@ -16,8 +16,8 @@ public class BaseScaner : MonoBehaviour
     private void Start()
     {
         _lineRenderer = GetComponent<LineRenderer>();
-        _resourses = new();
-        _lineRenderer.positionCount = points; 
+
+        _lineRenderer.positionCount = points;
         _lineRenderer.loop = true;
         DrawCircleShape();
     }
@@ -29,12 +29,15 @@ public class BaseScaner : MonoBehaviour
 
     public List<Resourse> Scan()
     {
+        _resourses = new();
         Collider[] resiurseCollider = Physics.OverlapSphere(transform.position, _scanRadius, _scannLayerMask);
 
         foreach (var collider in resiurseCollider)
         {
             if (collider.TryGetComponent(out Resourse resourse))
+            {
                 SelectedResourse(resourse);
+            }
         }
 
         return _resourses;

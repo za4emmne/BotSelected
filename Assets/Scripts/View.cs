@@ -9,8 +9,14 @@ public class View : MonoBehaviour
 
     private int _resourseCount;
 
+    private void Awake()
+    {
+        _base = GetComponent<Base>();
+    }
+
     private void Start()
     {
+        transform.position = _base.transform.position;
         ChangeResourseView();
     }
 

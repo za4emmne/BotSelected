@@ -86,6 +86,11 @@ public class FlagSetter : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         _isCreated = false;
     }
 
+    public void Realese()
+    {
+        _flag.gameObject.SetActive(false);
+    }
+
     private void SetFlag()
     {
         if (Input.GetMouseButtonDown(0))
@@ -94,7 +99,7 @@ public class FlagSetter : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
 
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
             {
-                if (_canBuild && _isCreated == false)
+                if (_canBuild && _isCreated == false && _flag == null)
                 {
                     _target = hit.point;
                     _flag = _generator.CreateFlag(_target);
@@ -102,8 +107,17 @@ public class FlagSetter : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
                 }
                 else if (_isCreated && _canBuild)
                 {
-                    _target = hit.point;
-                    _generator.Replace(_flag, _target);
+                    if (_flag.gameObject.activeSelf)
+                    {
+                        _target = hit.point;
+                        _generator.Replace(_flag, _target);
+                    }
+                    else
+                    {
+                        _flag.gameObject.SetActive(true);
+                        _target = hit.point;
+                        _generator.Replace(_flag, _target);
+                    }
                 }
 
                 _setBaseText.gameObject.SetActive(false);

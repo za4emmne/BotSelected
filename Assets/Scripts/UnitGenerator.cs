@@ -9,9 +9,12 @@ public class UnitGenerator : SpawnerObject<Unit>
 
     public void InitStartUnit(int count)
     {
-        for (int i = 0; i < count; i++)
+        if (count > 0)
         {
-            GenerateObject();
+            for (int i = 0; i < count; i++)
+            {
+                GenerateObject();
+            }
         }
     }
 
@@ -28,7 +31,6 @@ public class UnitGenerator : SpawnerObject<Unit>
 
     protected override void OnGet(Unit unit)
     {
-        unit.OnCreatedBase += _base.CreateBase;
         base.OnGet(unit);
         unit.Init(_base);
     }

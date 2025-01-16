@@ -7,6 +7,7 @@ using UnityEngine;
 public class Unit : MonoBehaviour
 {
     private Mover _mover;
+    private BaseGenerator _generator;
     private Resourse _target;
     private Base _base;
     private bool _isBusy;
@@ -15,9 +16,14 @@ public class Unit : MonoBehaviour
 
     public event Action<Flag, Unit> OnCreatedBase;
 
-    private void Start()
+    private void Awake()
     {
         _mover = GetComponent<Mover>();
+        _generator = GetComponent<BaseGenerator>();
+    }
+
+    private void Start()
+    {
         _isBusy = false;
     }
 
@@ -32,16 +38,18 @@ public class Unit : MonoBehaviour
         if (other.TryGetComponent<Base>(out Base BaseBots) && transform.childCount > 0 && _isBusy)
         {
             _isBusy = false;
-            _base.AddResourse(_target);
             _target.transform.parent = _base.transform;
+            _base.AddResourse(_target); 
             _target.Release();
         }
 
-        if(other.TryGetComponent<Flag>(out Flag flag) &&_isBusy)
+        if (other.TryGetComponent<Flag>(out Flag flag) && _isBusy)
         {
-            OnCreatedBase?.Invoke(flag, this);
+            Base botBase = _generator.Create(flag.transform);
+            Init(botBase);
+            botBase.Initialize(0);
+            flag.gameObject.SetActive(false);
             _isBusy = false;
-            //_base.CreateBase(flag.transform);
         }
     }
 
@@ -58,6 +66,7 @@ public class Unit : MonoBehaviour
     public void Init(Base baseBot)
     {
         _base = baseBot;
+        transform.parent = _base.transform;
     }
 
     public bool IsGetJob(Resourse resourse)

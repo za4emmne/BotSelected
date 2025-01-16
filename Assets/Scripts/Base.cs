@@ -17,7 +17,6 @@ public class Base : MonoBehaviour
     private List<Unit> _freeBots;
     private Coroutine _coroutine;
 
-
     public event Action ChangedResourseCount;
 
     private void Awake()
@@ -48,14 +47,6 @@ public class Base : MonoBehaviour
         _freeBots = new();
         _unitGenerator.InitStartUnit(countStartUnit);
         _coroutine = StartCoroutine(Work());
-    }
-
-    public void CreateBase(Flag flag, Unit unit)
-    {
-        Base botBase = _generator.Create(flag.transform);
-        unit.Init(botBase);
-        //botBase.Initialize(flag.transform);
-
     }
 
     public void AddResourse(Resourse resourse)

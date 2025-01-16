@@ -1,8 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.Pool;
 
 public class ResourseGenerator : SpawnerObject<Resourse>
 {
@@ -44,6 +41,7 @@ public class ResourseGenerator : SpawnerObject<Resourse>
         spawnObject.transform.position = GetRandomPosition();
         base.OnGet(spawnObject);
     }
+
     private IEnumerator SpawnWithDelay()
     {
         while (enabled)

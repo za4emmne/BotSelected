@@ -10,7 +10,8 @@ public class GameController : MonoBehaviour
 
     private void Start()
     {
-        Base botBase = Instantiate(_botBase, _position);
+        Base botBase = new();
+        botBase = Instantiate(_botBase, _position);
         botBase.Initialize(_unitCount);
     }
 }
